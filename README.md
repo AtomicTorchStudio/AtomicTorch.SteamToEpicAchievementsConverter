@@ -1,6 +1,8 @@
 Steam to Epic Games Store Achievements converter
 =============
 With this tool, you can convert Steam Achievements (in VDF format) to CSV format compatible with Epic Games Store.
+It will notify you if there are any missing locales.
+It will automatically download achievement icons from Steam.
 
 How to use
 -----
