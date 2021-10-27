@@ -26,12 +26,12 @@
             foreach (var entry in achievementEntries)
             {
                 DownloadIcon(filePath: Path.Combine(outputPath,
-                                                    string.Format(SettingsHelper.LockedIconFileNameFormat,
+                                                    string.Format(SettingsHelper.UnlockedIconFileNameFormat,
                                                                   entry.Id)),
                              entry.SteamIconIdUnlocked);
 
                 DownloadIcon(Path.Combine(outputPath,
-                                          string.Format(SettingsHelper.UnlockedIconFileNameFormat,
+                                          string.Format(SettingsHelper.LockedIconFileNameFormat,
                                                         entry.Id)),
                              entry.SteamIconIdLocked);
             }

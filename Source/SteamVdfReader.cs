@@ -46,7 +46,7 @@
                             Console.WriteLine("Press any key to continue");
                             Console.ReadKey();
                         }
-                        
+
                         continue;
                     }
 
@@ -62,8 +62,8 @@
                                                         name,
                                                         description,
                                                         isHidden,
-                                                        icon,
-                                                        iconGray));
+                                                        steamIconIdUnlocked: icon,
+                                                        steamIconIdLocked: iconGray));
                     }
                 }
             }
