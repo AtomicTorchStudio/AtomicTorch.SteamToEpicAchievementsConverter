@@ -12,11 +12,13 @@ How to obtain Raw Metadata for Steam Achievements:
 * Select "Stats" in the dropdown menu
 * Copy the text contents and save to a text file (this is a VDF file) with UTF8 Encoding
 
-How to convert
+How to convert:
 * There is an Input folder near the tool executable. Place the text VDF file there. It must contain the Raw Metadata from Steam of the Stats section (copy it completely to this new file)
 * Open Settings.ini file near the tool executable. Here you need to configure the name format for the achievement icon files
 * Launch the tool, ensure that the "Job is done" message is displayed
 * You will find the conversion results in the Output folder near the tool executable. Place the achievement icon files there to it and everything is ready to use with Epic Games Store
+
+In the case there is a locale mapping missing, please edit LocaleMapping.ini file to update it according to the [locale information table from Epic](https://dev.epicgames.com/docs/services/en-US/GameServices/BulkImporterExporterTool/index.html).
 
 Implementation limitations
 -----
