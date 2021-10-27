@@ -23,7 +23,7 @@
                     return;
                 }
 
-                var achievementEntries = SteamVdfReader.ReadAchievementEntries(input);
+                var achievementEntries = SteamVdfReader.ReadAchievementEntries(input, out var steamAppId);
 
                 EpicDataWriter.WriteAchievementDefinitions(
                     Path.GetFullPath("Output/achievementDefinitions.csv"),
@@ -33,13 +33,38 @@
                     Path.GetFullPath("Output/achievementLocalizations.csv"),
                     achievementEntries);
 
-                Console.WriteLine("Job complete!");
+                SteamAchievementIconDownloader.DownloadSteamAchievementIcons(steamAppId,
+                                                                             Path.GetFullPath("Output/"),
+                                                                             achievementEntries);
+
+                if (SteamToEpicLocaleConverter.UnknownLocales.Count > 0)
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("Job complete, but there are unmapped locales:");
+                    foreach (var locale in SteamToEpicLocaleConverter.UnknownLocales)
+                    {
+                        Console.WriteLine(" - " + locale);
+                    }
+
+                    Console.WriteLine(
+                        "The text entries using these locales were skipped (NOT included in achievementLocalizations file).");
+                    Console.WriteLine("You can map locales in LocaleMapping.ini file.");
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("Job complete!");
+                }
+
+                Console.ForegroundColor = ConsoleColor.Gray;
                 Console.WriteLine("Press any key to exit");
                 Console.ReadKey();
             }
             catch (Exception ex)
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Exception: " + ex);
+                Console.ForegroundColor = ConsoleColor.Gray;
                 Console.WriteLine("Press any key to exit");
                 Console.ReadKey();
             }

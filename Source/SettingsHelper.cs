@@ -10,6 +10,8 @@
 
         public static readonly string UnlockedIconFileNameFormat;
 
+        public static readonly string UrlDownloadSteamAchievementIcon;
+
         static SettingsHelper()
         {
             Console.WriteLine("Reading Settings.ini file...");
@@ -20,6 +22,11 @@
                 while (!reader.EndOfStream)
                 {
                     var line = reader.ReadLine();
+                    if (line.Length == 0)
+                    {
+                        continue;
+                    }
+
                     var split = line.Split('=');
                     var key = split[0].Trim();
                     var value = split[1].Trim();
@@ -29,6 +36,7 @@
 
             LockedIconFileNameFormat = settings["LockedIconFileNameFormat"];
             UnlockedIconFileNameFormat = settings["UnlockedIconFileNameFormat"];
+            UrlDownloadSteamAchievementIcon = settings["UrlDownloadSteamAchievementIcon"];
 
             Console.WriteLine("Finished reading Settings.ini file.");
         }

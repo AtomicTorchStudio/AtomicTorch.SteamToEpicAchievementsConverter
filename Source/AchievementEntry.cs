@@ -8,11 +8,17 @@ namespace AtomicTorch.SteamToEpicAchievementsConverter
 
         public readonly bool IsHidden;
 
+        public readonly string SteamIconIdLocked;
+
+        public readonly string SteamIconIdUnlocked;
+
         public AchievementEntry(
             string id,
             Dictionary<string, string> nameLocDictionary,
             Dictionary<string, string> descriptionLocDictionary,
-            bool isHidden)
+            bool isHidden,
+            string steamIconIdUnlocked,
+            string steamIconIdLocked)
         {
             this.Id = id;
             this.IsHidden = isHidden;
@@ -27,6 +33,8 @@ namespace AtomicTorch.SteamToEpicAchievementsConverter
             }
 
             this.LocalizationData = localizaitonData;
+            this.SteamIconIdUnlocked = steamIconIdUnlocked;
+            this.SteamIconIdLocked = steamIconIdLocked;
         }
 
         public Dictionary<string, TitleAndDescription> LocalizationData { get; }

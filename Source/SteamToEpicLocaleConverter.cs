@@ -6,6 +6,11 @@ namespace AtomicTorch.SteamToEpicAchievementsConverter
 
     internal static class SteamToEpicLocaleConverter
     {
+        /// <summary>
+        /// This is a collection of locales that were not found when requesting locale mapping.
+        /// </summary>
+        public static readonly HashSet<string> UnknownLocales = new HashSet<string>();
+
         private static readonly IReadOnlyDictionary<string, string> LocaleMapping;
 
         static SteamToEpicLocaleConverter()
@@ -16,7 +21,12 @@ namespace AtomicTorch.SteamToEpicAchievementsConverter
             {
                 while (!reader.EndOfStream)
                 {
-                    var line = reader.ReadLine();
+                    var line = reader.ReadLine().Trim();
+                    if (line.Length == 0)
+                    {
+                        continue;
+                    }
+
                     var split = line.Split('=');
                     var key = split[0].Trim();
                     var value = split[1].Trim();
@@ -28,13 +38,15 @@ namespace AtomicTorch.SteamToEpicAchievementsConverter
             Console.WriteLine($"Finished reading LocaleMapping.ini file. Total {LocaleMapping.Count} entries found.");
         }
 
-        public static string GetEpicLanguageCode(string steamLanguageCode)
+        public static bool TryGetEpicLanguageCode(string steamLanguageCode, out string languageCode)
         {
-            return LocaleMapping.TryGetValue(steamLanguageCode, out var result)
-                       ? result
-                       : throw new Exception("Unknown Steam language: "
-                                             + steamLanguageCode
-                                             + " - please add mapping for it in the LocaleMapping.ini file");
+            if (LocaleMapping.TryGetValue(steamLanguageCode, out languageCode))
+            {
+                return true;
+            }
+
+            UnknownLocales.Add(steamLanguageCode);
+            return false;
         }
     }
 }

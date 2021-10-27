@@ -8,7 +8,7 @@
 
     internal static class SteamVdfReader
     {
-        public static List<AchievementEntry> ReadAchievementEntries(string filePath)
+        public static List<AchievementEntry> ReadAchievementEntries(string filePath, out uint steamAppId)
         {
             var result = new List<AchievementEntry>();
             Console.WriteLine("Reading the input VDF file: " + filePath);
@@ -18,19 +18,52 @@
                 var deserializer = new VdfDeserializer();
                 var deserialized = deserializer.Deserialize(fileStream) as IDictionary<string, object>;
 
+                steamAppId = uint.Parse(deserialized.Keys.First());
                 dynamic root = deserialized.Values.First();
                 dynamic stats = root.stats;
                 var statEntries = (stats as IDictionary<string, object>);
                 foreach (dynamic statEntry in statEntries.Values)
                 {
-                    var steamAchievements = statEntry.bits as IDictionary<string, object>;
+                    IDictionary<string, object> steamAchievements;
+                    try
+                    {
+                        steamAchievements = statEntry.bits as IDictionary<string, object>;
+                    }
+                    catch (Exception)
+                    {
+                        try
+                        {
+                            var statName = statEntry.name;
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.WriteLine("Found a stat entry, will skip: " + statName);
+                            Console.ForegroundColor = ConsoleColor.Gray;
+                        }
+                        catch (Exception)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("Found an unknown entry, will skip: " + statEntry);
+                            Console.ForegroundColor = ConsoleColor.Gray;
+                            Console.WriteLine("Press any key to continue");
+                            Console.ReadKey();
+                        }
+                        
+                        continue;
+                    }
+
                     foreach (dynamic entry in steamAchievements.Values)
                     {
                         var id = entry.name;
                         var name = GetLocalizedEntries(entry.display.name);
                         var description = GetLocalizedEntries(entry.display.desc);
                         var isHidden = entry.display.hidden == "1";
-                        result.Add(new AchievementEntry(id, name, description, isHidden));
+                        var icon = entry.display.icon;
+                        var iconGray = entry.display.icon_gray;
+                        result.Add(new AchievementEntry(id,
+                                                        name,
+                                                        description,
+                                                        isHidden,
+                                                        icon,
+                                                        iconGray));
                     }
                 }
             }
@@ -54,9 +87,20 @@
                     continue;
                 }
 
-                var languageCode = language == "english"
-                                       ? string.Empty // English is the base language and has no locale ID
-                                       : SteamToEpicLocaleConverter.GetEpicLanguageCode(language);
+                string languageCode;
+                if (language == "english")
+                {
+                    languageCode = string.Empty;
+                }
+                else
+                {
+                    if (!SteamToEpicLocaleConverter.TryGetEpicLanguageCode(language, out languageCode))
+                    {
+                        // this language is not mapped
+                        continue;
+                    }
+                }
+
                 var text = (string)pair.Value;
                 result.Add(languageCode, text);
             }
