@@ -41,9 +41,8 @@
         <Reference Include="System.Core"/>
         <Reference Include="System.Data"/>
         <Reference Include="System.Xml"/>
-        <Reference Include="VdfConverter, Version=1.0.1.0, Culture=neutral, PublicKeyToken=null">
-            <HintPath>packages\VdfConverter.1.0.1\lib\netstandard2.0\VdfConverter.dll</HintPath>
-            <Private>True</Private>
+        <Reference Include="VdfConverter, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\VdfConverter.1.0.3\lib\netstandard2.0\VdfConverter.dll</HintPath>
         </Reference>
     </ItemGroup>
     <ItemGroup>
